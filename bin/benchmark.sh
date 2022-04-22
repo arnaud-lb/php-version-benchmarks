@@ -292,6 +292,14 @@ run_test () {
             run_micro_benchmark "app/zend/micro_bench.php"
             ;;
 
+        link_class)
+            run_real_benchmark "app/link_class/index.php" "" ""
+            ;;
+
+        bind_class)
+            run_real_benchmark "app/link_class/early_bind.php" "" ""
+            ;;
+
         *)
             echo "Invalid test ID!"
             ;;
