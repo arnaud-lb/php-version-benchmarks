@@ -292,12 +292,20 @@ run_test () {
             run_micro_benchmark "app/zend/micro_bench.php"
             ;;
 
-        link_class)
-            run_real_benchmark "app/link_class/index.php" "" ""
+        micro_1)
+            if [ $USE_LONG_VARIANT = "1" ]; then
+                run_real_benchmark "app/micro_1/long-closure.php" "" ""
+            else
+                run_real_benchmark "app/micro_1/short-closure.php" "" ""
+            fi
             ;;
 
-        bind_class)
-            run_real_benchmark "app/link_class/early_bind.php" "" ""
+        micro_2)
+            if [ $USE_LONG_VARIANT = "1" ]; then
+                run_real_benchmark "app/micro_2/long-closure.php" "" ""
+            else
+                run_real_benchmark "app/micro_2/short-closure.php" "" ""
+            fi
             ;;
 
         *)
@@ -333,13 +341,15 @@ run_benchmark () {
         mkdir -p "$log_dir"
 
         echo "---------------------------------------------------------------------------------------"
-        echo "$TEST_NAME - $RUN/$N - $INFRA_NAME - $PHP_NAME (opcache: $PHP_OPCACHE, preloading: $PHP_PRELOADING, JIT: $PHP_JIT)"
+        echo "$TEST_NAME - $RUN/$N - $INFRA_NAME - $PHP_NAME (opcache: $PHP_OPCACHE, preloading: $PHP_PRELOADING, JIT: $PHP_JIT, USE_LONG_VARIANT: $USE_LONG_VARIANT)"
         echo "---------------------------------------------------------------------------------------"
 
         run_test
 
         print_result_value "$log_file" "$memory_log_file" "$result_file" "1"
         print_result_value "$log_file" "$memory_log_file" "$final_result_file" "0"
+
+        sleep 60
     done
 
     echo "" >> "$final_result_file.md"
@@ -368,7 +378,7 @@ for test_config in $PROJECT_ROOT/config/test/*.ini; do
     source $test_config
     ((TEST_NUMBER=TEST_NUMBER+1))
 
-    sleep 5
+    sleep 10
     run_benchmark
 
 done
